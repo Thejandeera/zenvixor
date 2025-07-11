@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FiCode, FiServer, FiLayers, FiCheckCircle, FiClock, FiDollarSign, FiUsers } from 'react-icons/fi';
 
+
 const WebsiteDevelopment = () => {
   const services = [
     {
@@ -164,7 +165,7 @@ const WebsiteDevelopment = () => {
             initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mt-5 mb-4 md:mb-6"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">Website</span> Development
           </motion.h1>
@@ -185,7 +186,7 @@ const WebsiteDevelopment = () => {
             className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4"
           >
             <button 
-              onClick={() => handleNavigation('https://calendly.com/your-link', true)}
+              onClick={() => handleNavigation('https://wa.me/94785329002', true)}
               className="px-6 py-2.5 sm:px-8 sm:py-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg font-medium hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 text-white text-sm sm:text-base"
             >
               Get Started
@@ -360,7 +361,7 @@ const WebsiteDevelopment = () => {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 1 }}
         viewport={{ once: true }}
-        className="py-16 md:py-32 px-4 sm:px-6 lg:px-8 text-center bg-gradient-to-br from-white to-gray-100"
+        className="py-16  md:py-32 px-4 sm:px-6 lg:px-8 text-center bg-gradient-to-br from-white to-gray-100"
       >
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 md:mb-8 text-gray-900">
@@ -373,7 +374,7 @@ const WebsiteDevelopment = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => handleNavigation('https://calendly.com/your-link', true)}
+              onClick={() => handleNavigation('https://wa.me/94785329002', true)}
               className="px-6 py-2.5 sm:px-8 sm:py-4 bg-gradient-to-r from-green-600 to-emerald-500 rounded-lg font-bold hover:shadow-lg hover:shadow-green-500/30 transition-all duration-300 text-white text-sm sm:text-base"
             >
               Start Your Project

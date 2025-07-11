@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FiFilm, FiDollarSign, FiClock, FiCheckCircle, FiBarChart2, FiPlay, FiTrendingUp, FiUsers, FiLayers } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+
 
 const PromotionVideoEditing = () => {
   const services = [
@@ -152,6 +154,41 @@ const PromotionVideoEditing = () => {
     }
   };
 
+  const navigate = useNavigate();
+      
+        const scrollToPortfolio = () => {
+           if (window.location.pathname !== '/') {
+            navigate('/');
+            setTimeout(() => {
+              const element = document.getElementById('portfolio');
+              if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+          } else {
+            const element = document.getElementById('portfolio');
+            if (element) element.scrollIntoView({ behavior: 'smooth' });
+          }
+        };
+        const scrollToMap = () => {
+           if (window.location.pathname !== '/') {
+            navigate('/');
+            setTimeout(() => {
+              const element = document.getElementById('map');
+              if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+          } else {
+            const element = document.getElementById('map');
+            if (element) element.scrollIntoView({ behavior: 'smooth' });
+          }
+        };
+      
+        const handleNavigation = (url, newTab = false) => {
+          if (newTab) {
+            window.open(url, '_blank');
+          } else {
+            navigate(url);
+          }
+        };
+
   return (
     <div className="bg-white text-gray-900 min-h-screen">
       {/* Hero Section */}
@@ -171,7 +208,7 @@ const PromotionVideoEditing = () => {
             initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 mt-5 "
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-pink-500">Promotion Video</span> Editing
           </motion.h1>
@@ -191,10 +228,10 @@ const PromotionVideoEditing = () => {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <button className="px-8 py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 text-white">
+            <button  onClick={() => handleNavigation('https://wa.me/94785329002', true)} className="px-8 py-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 text-white">
               Get Started
             </button>
-            <button className="px-8 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-100 transition-all duration-300">
+            <button onClick={scrollToPortfolio} className="px-8 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-100 transition-all duration-300">
               View Portfolio
             </button>
           </motion.div>
@@ -380,6 +417,7 @@ const PromotionVideoEditing = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => handleNavigation('https://wa.me/94785329002', true)}
               className="px-8 py-4 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg font-bold hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300 text-white"
             >
               Start Your Project
@@ -387,9 +425,10 @@ const PromotionVideoEditing = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={scrollToMap}
               className="px-8 py-4 border border-gray-300 rounded-lg font-bold hover:bg-gray-100 transition-all duration-300"
             >
-              Get a Free Quote
+              Meet Experts
             </motion.button>
           </div>
         </div>

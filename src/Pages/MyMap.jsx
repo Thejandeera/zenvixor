@@ -94,7 +94,7 @@ const MyMap = () => {
             address: '1/4 , Shanthi Mawatha , Himbutana , Colombo , Sri lanka',
             hours: 'Mon-Fri: 8AM - 11PM',
             phone: '+94 71 886 0959',
-            email: 'thejan.info@gmail.com',
+            email: 'zenvixor.info@gmail.com',
             position: mainPosition
         },
         {
@@ -103,7 +103,7 @@ const MyMap = () => {
             address: 'Bogasthenna , Anthuduwawela , Haliela , Badulla , Sri lanka',
             hours: 'Mon-Sat: 8AM - 11PM',
             phone: '+94 78 532 9002',
-            email: 'thejan.info@gmail.com',
+            email: 'zenvixor.info@gmail.com',
             position: branchPosition
         }
     ];

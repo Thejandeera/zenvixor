@@ -11,8 +11,52 @@ import {
   Github,
   ChevronRight 
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  // Social media links
+  const socialLinks = [
+    { icon: Twitter, url: "https://twitter.com/zenvixor" },
+    { icon: Facebook, url: "https://facebook.com/zenvixor" },
+    { icon: Instagram, url: "https://instagram.com/zenvixor" },
+    { icon: Linkedin, url: "https://linkedin.com/company/zenvixor" },
+    { icon: Github, url: "https://github.com/zenvixor" }
+  ];
+
+  // Services with their routes
+  const services = [
+    { name: 'Web Development', path: '/website-development' },
+    { name: 'Social Media Management', path: '/social-media-management' },
+    { name: 'Cash Cow Video Editing', path: '/cash-cow-video-editing' },
+    { name: 'Youtube Channel Management', path: '/youtube-channel-management' },
+    { name: 'Podcast Editing', path: '/podcast-editing' },
+    { name: 'Promotion Video', path: '/promotion-video-editing' }
+  ];
+
+  // Quick links with their section IDs
+  const quickLinks = [
+    { name: 'Home', id: 'home' },
+    { name: 'Services', id: 'services' },
+    { name: 'Portfolio', id: 'portfolio' },
+    { name: 'About Us', id: 'about' },
+    { name: 'Contact', id: 'map' }
+  ];
+
+  const handleLinkClick = (id) => {
+    if (window.location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+    } else {
+      const element = document.getElementById(id);
+      if (element) element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="bg-white text-black pt-16 pb-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -32,15 +76,17 @@ const Footer = () => {
               Crafting digital excellence with innovative solutions that drive business growth and customer satisfaction.
             </p>
             <div className="flex space-x-4">
-              {[Twitter, Facebook, Instagram, Linkedin, Github].map((Icon, index) => (
+              {socialLinks.map((social, index) => (
                 <motion.a
                   key={index}
-                  href="#"
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors"
                   whileHover={{ y: -3, backgroundColor: "#e5e7eb" }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  <Icon className="w-5 h-5 text-gray-700 hover:text-black transition-colors" />
+                  <social.icon className="w-5 h-5 text-gray-700 hover:text-black transition-colors" />
                 </motion.a>
               ))}
             </div>
@@ -55,19 +101,19 @@ const Footer = () => {
           >
             <h4 className="text-lg font-semibold mb-6 text-black uppercase tracking-wider">Quick Links</h4>
             <ul className="space-y-3">
-              {['Home', 'Services', 'Portfolio', 'About Us', 'Contact'].map((item, index) => (
+              {quickLinks.map((item, index) => (
                 <motion.li
                   key={index}
                   whileHover={{ x: 5 }}
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-green-500 transition-colors flex items-center"
+                  <button
+                    onClick={() => handleLinkClick(item.id)}
+                    className="text-gray-600 hover:text-green-500 transition-colors flex items-center w-full text-left"
                   >
                     <ChevronRight className="w-4 h-4 mr-2 text-red-500" />
-                    {item}
-                  </a>
+                    {item.name}
+                  </button>
                 </motion.li>
               ))}
             </ul>
@@ -82,19 +128,19 @@ const Footer = () => {
           >
             <h4 className="text-lg font-semibold mb-6 text-black uppercase tracking-wider">Services</h4>
             <ul className="space-y-3">
-              {['Web Development', 'UI/UX Design', 'Mobile Apps', 'Digital Marketing', 'SEO'].map((service, index) => (
+              {services.map((service, index) => (
                 <motion.li
                   key={index}
                   whileHover={{ x: 5 }}
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-green-500 transition-colors flex items-center"
+                  <button
+                    onClick={() => navigate(service.path)}
+                    className="text-gray-600 hover:text-green-500 transition-colors flex items-center w-full text-left"
                   >
                     <ChevronRight className="w-4 h-4 mr-2 text-red-500" />
-                    {service}
-                  </a>
+                    {service.name}
+                  </button>
                 </motion.li>
               ))}
             </ul>
@@ -123,8 +169,8 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 text-red-500" />
-                <a href="mailto:info@zenvixor.com" className="ml-3 text-gray-600 hover:text-green-500 transition-colors">
-                  info@zenvixor.com
+                <a href="mailto:zenvixor.info@gmail.com" className="ml-3 text-gray-600 hover:text-green-500 transition-colors">
+                  zenvixor.info@gmail.com
                 </a>
               </li>
               <li className="flex items-center">
@@ -157,17 +203,9 @@ const Footer = () => {
           </motion.p>
 
           <div className="flex space-x-6">
-            {['Privacy Policy', 'Terms of Service', 'Cookies'].map((item, index) => (
-              <motion.a
-                key={index}
-                href="#"
-                className="text-gray-500 hover:text-green-500 text-sm transition-colors"
-                whileHover={{ y: -2 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-              >
-                {item}
-              </motion.a>
-            ))}
+            <span className="text-gray-500 text-sm hover:text-red-500">Privacy Policy</span>
+            <span className="text-gray-500 text-sm hover:text-red-500">Terms of Service</span>
+            <span className="text-gray-500 text-sm hover:text-red-500">Cookies</span>
           </div>
         </div>
       </div>
