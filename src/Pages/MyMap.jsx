@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -17,8 +17,15 @@ const createCustomIcon = () => {
     });
 };
 
-const MapMarker = ({ position }) => {
+const MapMarker = ({ position, title }) => {
     const map = useMap();
+
+    useEffect(() => {
+        map.flyTo(position, 16, {
+            duration: 1,
+            easeLinearity: 0.25
+        });
+    }, [position, map]);
 
     return (
         <Marker
@@ -47,11 +54,11 @@ const MapMarker = ({ position }) => {
                         >
                             <MapPin className="text-red-500" size={18} />
                         </motion.span>
-                        <span>Our Headquarters</span>
+                        <span>{title}</span>
                     </h3>
-                    <p className="text-gray-600 mt-1 text-sm">6.927611, 79.920194</p>
+                    <p className="text-gray-600 mt-1 text-sm">{position[0]}, {position[1]}</p>
                     <motion.a
-                        href="https://www.google.com/maps?q=6.927611,79.920194"
+                        href={`https://www.google.com/maps?q=${position[0]},${position[1]}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center mt-2 text-sm text-green-600 hover:text-green-700 transition-colors"
@@ -66,11 +73,15 @@ const MapMarker = ({ position }) => {
 };
 
 const MyMap = () => {
-    const position = [6.927611, 79.920194]; // Updated coordinates
+    const mainPosition = [6.927611, 79.920194];
+    const branchPosition = [6.962287942448409, 81.02965913037578];
     const [activeTab, setActiveTab] = useState('location');
     const [isMounted, setIsMounted] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [mapPosition, setMapPosition] = useState(mainPosition);
+    const [currentTitle, setCurrentTitle] = useState('Main Office');
+    const mapRef = useRef();
 
     useEffect(() => {
         setIsMounted(true);
@@ -83,7 +94,8 @@ const MyMap = () => {
             address: '1/4 , Shanthi Mawatha , Himbutana , Colombo , Sri lanka',
             hours: 'Mon-Fri: 8AM - 11PM',
             phone: '+94 71 886 0959',
-            email: 'thejan.info@gmail.com'
+            email: 'thejan.info@gmail.com',
+            position: mainPosition
         },
         {
             id: 'branch',
@@ -91,7 +103,8 @@ const MyMap = () => {
             address: 'Bogasthenna , Anthuduwawela , Haliela , Badulla , Sri lanka',
             hours: 'Mon-Sat: 8AM - 11PM',
             phone: '+94 78 532 9002',
-            email: 'thejan.info@gmail.com'
+            email: 'thejan.info@gmail.com',
+            position: branchPosition
         }
     ];
 
@@ -104,6 +117,22 @@ const MyMap = () => {
 
     const handleTouchEnd = () => {
         setIsDragging(false);
+    };
+
+    const handleTabChange = (tabId) => {
+        setActiveTab(tabId);
+        const newLocation = locations.find(loc => loc.id === tabId);
+        if (newLocation) {
+            setMapPosition(newLocation.position);
+            setCurrentTitle(newLocation.title);
+        }
+    };
+
+    const handleGetDirections = () => {
+        const currentLocation = locations.find(loc => loc.id === activeTab);
+        if (currentLocation) {
+            window.open(`https://www.google.com/maps?q=${currentLocation.position[0]},${currentLocation.position[1]}`, '_blank');
+        }
     };
 
     return (
@@ -152,7 +181,7 @@ const MyMap = () => {
                                 {locations.map((location) => (
                                     <motion.button
                                         key={location.id}
-                                        onClick={() => setActiveTab(location.id)}
+                                        onClick={() => handleTabChange(location.id)}
                                         className={`relative px-6 py-4 font-medium text-sm uppercase tracking-wider ${activeTab === location.id ? 'text-green-600' : 'text-gray-500 hover:text-black'}`}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
@@ -238,6 +267,7 @@ const MyMap = () => {
                                             </motion.div>
 
                                             <motion.button
+                                                onClick={handleGetDirections}
                                                 className="inline-flex items-center bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-full font-medium mt-4 shadow-lg hover:shadow-xl transition-all"
                                                 whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(16, 185, 129, 0.3)" }}
                                                 whileTap={{ scale: 0.95 }}
@@ -263,7 +293,7 @@ const MyMap = () => {
                     >
                         {isMounted && (
                             <MapContainer
-                                center={position}
+                                center={mapPosition}
                                 zoom={15}
                                 scrollWheelZoom={false}
                                 className="h-full w-full z-0"
@@ -271,13 +301,14 @@ const MyMap = () => {
                                 touchZoom={false}
                                 doubleClickZoom={false}
                                 boxZoom={false}
+                                ref={mapRef}
                             >
                                 <TileLayer
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                     className="map-tiles"
                                 />
-                                <MapMarker position={position} />
+                                <MapMarker position={mapPosition} title={currentTitle} />
                             </MapContainer>
                         )}
                         <motion.div
