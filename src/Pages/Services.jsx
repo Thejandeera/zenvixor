@@ -1,28 +1,37 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Services = () => {
+  const navigate = useNavigate();
   const services = [
     {
-      title: "Cash Cow Editing",
-      description: "High-converting video edits for maximum ROI",
-      image: "/images/image1.jpg",
-      stats: ["2000+ Projects", "28g/m Efficiency"],
-      accent: "bg-gradient-to-br from-amber-500 to-yellow-300"
+      title: "Website Development",
+      description: "Modern, responsive, and user-centric web solutions",
+      image: "/images/image7.jpg",
+      stats: ["100+ Clients", "Fast Delivery"],
+      accent: "bg-gradient-to-br from-purple-500 to-fuchsia-300"
     },
     {
-      title: "Reels Editing",
+      title: "Social Media Management",
       description: "Scroll-stopping short-form content",
-      image: "/images/image2.jpg",
-      stats: ["100% Satisfaction", "48h Delivery"],
+      image: "/images/image8.jpg",
+      stats: ["100% Satisfaction", "unlimited revision"],
       accent: "bg-gradient-to-br from-blue-500 to-cyan-300"
     },
     {
-      title: "Slide Show Video",
-      description: "Dynamic visual storytelling",
-      image: "/images/image3.jpg",
-      stats: ["500+ Clients", "4K Quality"],
-      accent: "bg-gradient-to-br from-purple-500 to-fuchsia-300"
+      title: "Cash Cow Video Editing",
+      description: "High-converting video edits for maximum ROI",
+      image: "/images/image1.jpg",
+      stats: ["400+ Projects", "28g/m Efficiency"],
+      accent: "bg-gradient-to-br from-amber-500 to-yellow-300"
+    },
+    {
+      title: "YouTube Channel Management",
+      description: "End-to-end channel growth",
+      image: "/images/image6.jpg",
+      stats: ["SEO Optimized", "Analytics Driven"],
+      accent: "bg-gradient-to-br from-gray-800 to-gray-600"
     },
     {
       title: "Podcast Editing",
@@ -32,18 +41,11 @@ const Services = () => {
       accent: "bg-gradient-to-br from-green-500 to-emerald-300"
     },
     {
-      title: "Promotion Video",
+      title: "Promotion Video Editing",
       description: "High-impact marketing assets",
       image: "/images/image5.jpg",
       stats: ["A.4.2 Standards", "A.7A Compliance"],
       accent: "bg-gradient-to-br from-red-500 to-pink-300"
-    },
-    {
-      title: "YouTube Management",
-      description: "End-to-end channel growth",
-      image: "/images/image6.jpg",
-      stats: ["SEO Optimized", "Analytics Driven"],
-      accent: "bg-gradient-to-br from-gray-800 to-gray-600"
     }
   ];
 
@@ -77,8 +79,13 @@ const Services = () => {
     }
   };
 
+  const handleServiceClick = (serviceTitle) => {
+    const route = serviceTitle.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/${route}`);
+  };
+
   return (
-    <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden bg-white    ">  
+    <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden bg-white">  
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden opacity-10">
         <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-blue-500 blur-3xl animate-float" />
@@ -147,7 +154,10 @@ const Services = () => {
                   <h3 className="text-2xl font-bold text-white mb-2">{service.title}</h3>
                   <p className="text-gray-300 mb-4">{service.description}</p>
                   
-                  <button className="px-5 py-2.5 rounded-lg bg-white text-gray-900 font-medium hover:bg-gray-100 transition-colors duration-300 flex items-center gap-2">
+                  <button 
+                    onClick={() => handleServiceClick(service.title)}
+                    className="px-5 py-2.5 rounded-lg bg-white text-gray-900 font-medium hover:bg-gray-100 transition-colors duration-300 flex items-center gap-2"
+                  >
                     <span>Explore Service</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -161,8 +171,6 @@ const Services = () => {
             </motion.div>
           ))}
         </motion.div>
-
-        
       </div>
 
       {/* Global styles */}

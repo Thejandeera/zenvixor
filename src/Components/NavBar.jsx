@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const NavBar = () => {
   const [activeLink, setActiveLink] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,28 +26,28 @@ const NavBar = () => {
   const handleLinkClick = (link) => {
     setActiveLink(link);
     setIsMobileMenuOpen(false);
-    
-    // Scroll to the relevant section
-    const sectionId = link.toLowerCase();
-    let targetElement;
-    
-    if (sectionId === 'support' || sectionId === 'meet experts') {
-      targetElement = document.getElementById('map');
-    } else {
-      targetElement = document.getElementById(sectionId);
-    }
 
-    if (targetElement) {
-      // Close mobile menu first
-      setIsMobileMenuOpen(false);
-      
-      // Wait for menu to close before scrolling
-      setTimeout(() => {
-        targetElement.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }, 300); // Match this with your mobile menu close animation duration
+    const sectionId = link.toLowerCase() === 'support' || link.toLowerCase() === 'meet experts'
+      ? 'map'
+      : link.toLowerCase();
+
+    const scrollToSection = () => {
+      const targetElement = document.getElementById(sectionId);
+      if (targetElement) {
+        setTimeout(() => {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 300);
+      }
+    };
+
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(scrollToSection, 500); // allow time for the homepage to load
+    } else {
+      scrollToSection();
     }
   };
 
