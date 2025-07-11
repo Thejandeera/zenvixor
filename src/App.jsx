@@ -1,7 +1,7 @@
-// App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import NavBar from './Components/NavBar';
+import ScrollToTop from './Components/ScrollToTop'; 
 import Hero from './Pages/Hero';
 import About from './Pages/About';
 import Services from './Pages/Services';
@@ -12,11 +12,15 @@ import Footer from './Components/Footer';
 import WebsiteDevelopment from './Pages/WebsiteDevelopment';
 import SocialMediaManagement from './Pages/SocialMediaManagement';
 import CashCowVideoEditing from './Pages/CashCowVideoEditing';
+import YouTubeManagement from './Pages/YouTubeManagement';
+import PodcastEditing from './Pages/PodcastEditing';
+import PromotionVideoEditing from './Pages/PromotionVideoEditing';
 
 const App = () => {
   return (
     <div className="relative">
       <NavBar />
+      <ScrollToTop /> 
       <Routes>
         <Route path="/" element={
           <>
@@ -31,6 +35,9 @@ const App = () => {
         <Route path="/website-development" element={<WebsiteDevelopment />} />
         <Route path="/social-media-management" element={<SocialMediaManagement />} />
         <Route path="/cash-cow-video-editing" element={<CashCowVideoEditing />} />
+        <Route path="/youtube-channel-management" element={<YouTubeManagement />} />
+        <Route path="/podcast-editing" element={<PodcastEditing />} />
+        <Route path="/promotion-video-editing" element={<PromotionVideoEditing />} />
       </Routes>
       <Footer />
     </div>
