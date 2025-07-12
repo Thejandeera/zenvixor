@@ -3,9 +3,10 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FiMail, FiSend } from 'react-icons/fi';
 import { MapPin, Navigation, ChevronRight, Clock, Phone, Mail } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
-// Custom marker icon with modern styling
 const createCustomIcon = () => {
     return new L.Icon({
         iconUrl: '/images/marker.png',
@@ -81,11 +82,22 @@ const MyMap = () => {
     const [isDragging, setIsDragging] = useState(false);
     const [mapPosition, setMapPosition] = useState(mainPosition);
     const [currentTitle, setCurrentTitle] = useState('Main Office');
+    const [email, setEmail] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState({ success: false, message: '' });
+    const [showEmailForm, setShowEmailForm] = useState(false);
     const mapRef = useRef();
+    const emailFormRef = useRef();
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
+
+    useEffect(() => {
+        if (showEmailForm && emailFormRef.current) {
+            emailFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }, [showEmailForm]);
 
     const locations = [
         {
@@ -108,7 +120,6 @@ const MyMap = () => {
         }
     ];
 
-    // Prevent touch events from propagating when not dragging
     const handleTouchStart = (e) => {
         if (e.target.closest('.leaflet-container')) {
             setIsDragging(true);
@@ -135,6 +146,49 @@ const MyMap = () => {
         }
     };
 
+    const handleEmailSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            setSubmitStatus({ success: false, message: 'Please enter a valid email address' });
+            return;
+        }
+
+        setIsSubmitting(true);
+        setSubmitStatus({ success: false, message: '' });
+
+        try {
+            const SERVICE_ID = 'service_7zrivds';
+            const TEMPLATE_ID = 'template_qegnpz7';
+            const PUBLIC_KEY = 'ywM5RYslcBCpTUs1S';
+
+            const response = await emailjs.send(
+                SERVICE_ID,
+                TEMPLATE_ID,
+                { from_email: email },
+                PUBLIC_KEY
+            );
+
+            if (response.status === 200) {
+                setSubmitStatus({ success: true, message: 'Thank you! We will contact you soon.' });
+                setEmail('');
+                setTimeout(() => {
+                    setShowEmailForm(false);
+                    setSubmitStatus({ success: false, message: '' });
+                }, 3000);
+            } else {
+                throw new Error('Email sending failed');
+            }
+        } catch (error) {
+            setSubmitStatus({ 
+                success: false, 
+                message: error.text || 'Failed to send your request. Please try again later.' 
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <div
             className="bg-gradient-to-br from-white to-gray-50 py-16 px-4 sm:px-6 lg:px-8"
@@ -142,7 +196,7 @@ const MyMap = () => {
             onTouchEnd={handleTouchEnd}
             style={{ touchAction: isDragging ? 'none' : 'auto' }}
         >
-            <div className="max-w-7xl mx-auto  mt-6">
+            <div className="max-w-7xl mx-auto mt-6">
                 <motion.div
                     className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
                     initial={{ opacity: 0 }}
@@ -150,7 +204,6 @@ const MyMap = () => {
                     transition={{ duration: 0.6 }}
                     viewport={{ once: true }}
                 >
-                    {/* Left Content */}
                     <div className="space-y-10">
                         <motion.div
                             initial={{ x: -20, opacity: 0 }}
@@ -170,7 +223,6 @@ const MyMap = () => {
                             </motion.p>
                         </motion.div>
 
-                        {/* Location Tabs */}
                         <motion.div
                             className="space-y-8"
                             initial={{ y: 20, opacity: 0 }}
@@ -266,14 +318,135 @@ const MyMap = () => {
                                                 </a>
                                             </motion.div>
 
-                                            <motion.button
-                                                onClick={handleGetDirections}
-                                                className="inline-flex items-center bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-full font-medium mt-4 shadow-lg hover:shadow-xl transition-all"
-                                                whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(16, 185, 129, 0.3)" }}
-                                                whileTap={{ scale: 0.95 }}
-                                            >
-                                                Get Directions <ChevronRight className="ml-1" size={16} />
-                                            </motion.button>
+                                            <div className="flex flex-col sm:flex-row gap-4">
+                                                <motion.button
+                                                    onClick={handleGetDirections}
+                                                    className="flex-1 flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+                                                    whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(16, 185, 129, 0.3)" }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                >
+                                                    Get Directions <ChevronRight className="ml-1" size={16} />
+                                                </motion.button>
+
+                                                <motion.button
+                                                    onClick={() => setShowEmailForm(!showEmailForm)}
+                                                    className={`flex-1 flex items-center justify-center px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all ${showEmailForm ? 'bg-black text-white hover:bg-gray-800' : 'bg-gradient-to-r from-green-500 to-emerald-600 text-white'}`}
+                                                    whileHover={{ scale: 1.05, boxShadow: showEmailForm ? "0 10px 25px -5px rgba(0, 0, 0, 0.3)" : "0 10px 25px -5px rgba(16, 185, 129, 0.3)" }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                >
+                                                    <FiMail className="mr-2" />
+                                                    {showEmailForm ? 'Cancel' : 'Click Here to Email Us'}
+                                                </motion.button>
+                                            </div>
+
+                                            <div ref={emailFormRef}>
+                                                <AnimatePresence>
+                                                    {showEmailForm && (
+                                                        <motion.div
+                                                            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                                                            animate={{ opacity: 1, height: 'auto', marginTop: '1.5rem' }}
+                                                            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                                                            transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                                            className="overflow-hidden"
+                                                        >
+                                                            <div className="p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+                                                                <div className="text-center mb-6">
+                                                                    <motion.div
+                                                                        className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4"
+                                                                        initial={{ scale: 0 }}
+                                                                        animate={{ scale: 1 }}
+                                                                        transition={{ delay: 0.2 }}
+                                                                    >
+                                                                        <FiMail className="w-8 h-8 text-white" />
+                                                                    </motion.div>
+                                                                    <motion.h3
+                                                                        className="text-2xl font-bold text-black mb-2"
+                                                                        initial={{ y: 10, opacity: 0 }}
+                                                                        animate={{ y: 0, opacity: 1 }}
+                                                                        transition={{ delay: 0.3 }}
+                                                                    >
+                                                                        Get in Touch
+                                                                    </motion.h3>
+                                                                    <motion.p
+                                                                        className="text-gray-600"
+                                                                        initial={{ y: 10, opacity: 0 }}
+                                                                        animate={{ y: 0, opacity: 1 }}
+                                                                        transition={{ delay: 0.4 }}
+                                                                    >
+                                                                        We'll respond to your inquiry within 24 hours
+                                                                    </motion.p>
+                                                                </div>
+
+                                                                <form onSubmit={handleEmailSubmit} className="space-y-4">
+                                                                    <motion.div
+                                                                        initial={{ y: 10, opacity: 0 }}
+                                                                        animate={{ y: 0, opacity: 1 }}
+                                                                        transition={{ delay: 0.5 }}
+                                                                    >
+                                                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                                                                            Your Email Address
+                                                                        </label>
+                                                                        <div className="relative">
+                                                                            <input
+                                                                                type="email"
+                                                                                id="email"
+                                                                                value={email}
+                                                                                onChange={(e) => setEmail(e.target.value)}
+                                                                                required
+                                                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300"
+                                                                                placeholder="Enter your email"
+                                                                            />
+                                                                        </div>
+                                                                    </motion.div>
+
+                                                                    {submitStatus.message && (
+                                                                        <motion.div
+                                                                            initial={{ opacity: 0, y: 10 }}
+                                                                            animate={{ opacity: 1, y: 0 }}
+                                                                            className={`p-3 rounded-lg text-sm ${submitStatus.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                                                                        >
+                                                                            {submitStatus.message}
+                                                                        </motion.div>
+                                                                    )}
+
+                                                                    <motion.div
+                                                                        className="pt-2"
+                                                                        initial={{ y: 10, opacity: 0 }}
+                                                                        animate={{ y: 0, opacity: 1 }}
+                                                                        transition={{ delay: 0.6 }}
+                                                                    >
+                                                                        <button
+                                                                            type="submit"
+                                                                            disabled={isSubmitting}
+                                                                            whileHover={{ scale: 1.03 }}
+                                                                            whileTap={{ scale: 0.98 }}
+                                                                            className={`w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-lg font-medium text-white ${isSubmitting ? 'bg-gray-500' : 'bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800'} shadow-sm transition-all duration-300`}
+                                                                        >
+                                                                            {isSubmitting ? (
+                                                                                'Sending...'
+                                                                            ) : (
+                                                                                <>
+                                                                                    <FiSend className="mr-2" />
+                                                                                    Send Message
+                                                                                </>
+                                                                            )}
+                                                                        </button>
+                                                                    </motion.div>
+                                                                </form>
+
+                                                                <motion.div
+                                                                    className="mt-4 text-center text-xs text-gray-500"
+                                                                    initial={{ y: 10, opacity: 0 }}
+                                                                    animate={{ y: 0, opacity: 1 }}
+                                                                    transition={{ delay: 0.7 }}
+                                                                >
+                                                                    By submitting, you agree to our privacy policy
+                                                                </motion.div>
+                                                            </div>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
                                         </div>
                                     ))}
                                 </motion.div>
@@ -281,7 +454,6 @@ const MyMap = () => {
                         </motion.div>
                     </div>
 
-                    {/* Right Map */}
                     <motion.div
                         className="h-[300px] lg:h-[550px] rounded-2xl overflow-hidden shadow-2xl border border-gray-900 relative z-0 mx-6 lg:mx-0"
                         initial={{ opacity: 0, scale: 0.95 }}
@@ -324,8 +496,7 @@ const MyMap = () => {
                 </motion.div>
             </div>
 
-            {/* Modern Custom Styles */}
-            <style jsx global>{`
+            <style jsx="true" global="true">{`
                 .modern-marker {
                     transition: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
                     filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.2));

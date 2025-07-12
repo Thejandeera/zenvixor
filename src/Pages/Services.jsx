@@ -173,8 +173,8 @@ const Services = () => {
         </motion.div>
       </div>
 
-      {/* Global styles */}
-      <style jsx global>{`
+            {/* Global styles */}
+      <style jsx="true" global="true">{`
         @keyframes float {
           0%, 100% { transform: translateY(0) rotate(0deg); }
           50% { transform: translateY(-20px) rotate(2deg); }

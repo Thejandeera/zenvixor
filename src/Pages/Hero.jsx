@@ -239,7 +239,7 @@ const Hero = () => {
       </div>
 
       {/* Custom CSS for script font */}
-      <style jsx>{`
+      <style jsx="true">{`
         .font-script {
           font-family: 'Brush Script MT', cursive;
         }
